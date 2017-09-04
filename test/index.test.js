@@ -8,7 +8,6 @@ const expect = require('chai').expect,
     ],
     suits = ['s', 'd', 'h', 'c'];
 
-
 function constructDeckArray() {
     var deckArr = [];
 
@@ -74,7 +73,7 @@ describe('cardMethods', function() {
             assert.containsAllKeys(cardTracker.remainingCards, constructDeckArray());
             expect(cardTracker.remainingCards.qc).to.equal(2);
             expect(cardTracker.remainingCards.ts).to.equal(1);
-            expect(cardTracker.remainingCards.jd).to.equal(-1);
+            expect(cardTracker.remainingCards.jd).to.equal(0);
         });
     });
 
@@ -111,12 +110,12 @@ describe('cardMethods', function() {
             spy.restore();
         });
 
-        it('Should warn of negative card count', function() {
+        it('Should warn of zero card count', function() {
             var spy = sinon.spy(console, 'warn'),
             cardTracker = new CardTracker(2);
 
             cardTracker.removeCards('as as as');
-            assert(spy.calledWith('Warning: Card count below 0'));
+            assert(spy.calledWith('Warning: Card cound cannot be less than 0'));
             spy.restore();
         });
     });

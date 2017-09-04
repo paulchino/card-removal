@@ -33,9 +33,10 @@ CardTracker.prototype = {
         self = this;
 
         cardList.forEach(function(card) {
-            self.remainingCards[card]--;
-            if (self.remainingCards[card] < 0) {
-                self.constructWarnings('negativeCount', null, true);
+            if (self.remainingCards[card] > 0) {
+                self.remainingCards[card]--;
+            } else {
+                self.constructWarnings('zeroCount', null, true);
             }
         });
     },
@@ -90,7 +91,7 @@ CardTracker.prototype = {
         'intReq': 'Enter an integer to create tracker',
         'updateDeck': 'Enter cards as a space seperated string',
         'invalidCard': 'Invalid card: ',
-        'negativeCount': 'Warning: Card count below 0'
+        'zeroCount': 'Warning: Card cound cannot be less than 0'
     }
 }
 
