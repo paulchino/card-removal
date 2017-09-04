@@ -1,6 +1,6 @@
 {
   "name": "card-tracker",
-  "version": "0.0.0-development",
+  "version": "0.0.0-semantically-released",
   "description": "Shows cards left in the deck",
   "main": "src/index.js",
   "scripts": {
