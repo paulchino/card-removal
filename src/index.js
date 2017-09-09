@@ -1,9 +1,15 @@
 
 function CardTracker(decks) {
     this.decks = this.validateConstructor(decks);
+    // number of cards in the deck
+    // count
+    this.cardCount = 0;
+    this.trueCardCount = 0;
+    this.cardsLeft = this.decks * 52;
+
     this.remainingCards = {
         'as': 0, 'ad': 0, 'ah': 0, 'ac': 0,
-        'ks': 0, 'kd': 0,'kh': 0, 'kc': 0,
+        'ks': 0, 'kd': 0, 'kh': 0, 'kc': 0,
         'qs': 0, 'qd': 0, 'qh': 0, 'qc': 0,
         'js': 0, 'jd': 0, 'jh': 0, 'jc': 0,
         'ts': 0, 'td': 0, 'th': 0, 'tc': 0,
@@ -17,8 +23,18 @@ function CardTracker(decks) {
         '2s': 0, '2d': 0, '2h': 0, '2c': 0
     };
 
+    this.cardValues = {
+        'a': -1, 'k': -1, 'q': -1, 'j': -1, 't': -1,
+        '9': 0, '8': 0, '7': 0,
+        '6': 1, '5': 1, '4': 1, '3': 1, '2': 1
+    };
+
     this.constructDeck(this.decks);
 };
+
+// 2-6 -> +1
+// 7-9 -> 0
+// 10-a -> -1
 
 CardTracker.prototype = {
     constructDeck: function(decks) {
