@@ -11,13 +11,11 @@ const expect = require('chai').expect,
 function constructDeckArray() {
     var deckArr = [];
 
-
     cardVals.forEach(function(val) {
         suits.forEach(function(suit) {
             deckArr.push(val + suit);
         });
     });
-
     return deckArr;
 }
 
@@ -31,6 +29,13 @@ describe('cardTracker', function() {
 
         it('Should have deck property with value of 1', function() {
             expect(cardTracker).to.have.property('decks').and.equal(1);
+        });
+
+        it('Should have correct cardCount, trueCardCount, and numberOfCardsLeft', function() {
+            expect(cardTracker.cardCount).to.equal(0);
+            expect(cardTracker.trueCardCount).to.equal(0);
+            expect(cardTracker.numberOfCardsLeft).to.equal(52);
+            assert.containsAllKeys(cardTracker.cardValues, cardVals);
         });
 
         it('Should have a remainingCards attribute with 52 keys', function() {
@@ -88,35 +93,47 @@ describe('cardMethods', function() {
         });
     });
 
-    describe('validationErrors', function() {
-        it('Will only accept numbers for deck constructor', function() {
-            assert.throws(function () { new CardTracker('foo') });
+    describe('validateCards', function() {
+        it('Should strip out invalid card values', function() {
+            var badStr = 'as foo as qh 2c rc tg',
+            expectedArray = ['as', 'as', 'qh', '2c'],
+            cardTracker = new CardTracker(1),
+            filteredCards = cardTracker.validateCards(badStr);
+
+            expect(filteredCards).to.have.lengthOf(4);
+            expect(filteredCards).to.deep.equal(expectedArray);
         });
+    });
+});
 
-        it('Cards should only be strings', function() {
-            assert.throws(function() {
-                var cardTracker = new CardTracker(4);
-                cardTracker.addCards(['foo']);
-            });
+describe('validationErrors', function() {
+    it('Will only accept numbers for deck constructor', function() {
+        assert.throws(function () { new CardTracker('foo') });
+    });
+
+    it('Cards should only be strings', function() {
+        assert.throws(function() {
+            var cardTracker = new CardTracker(4);
+            cardTracker.addCards(['foo']);
         });
+    });
 
-        it('Should warn of invalid cards', function() {
-            var spy = sinon.spy(console, 'warn'),
-            cardTracker = new CardTracker(2);
+    it('Should warn of invalid cards', function() {
+        var spy = sinon.spy(console, 'warn'),
+        cardTracker = new CardTracker(2);
 
-            cardTracker.removeCards('ab as foo');
-            assert(spy.calledWith('Invalid card: ab'));
-            assert(spy.calledWith('Invalid card: foo'));
-            spy.restore();
-        });
+        cardTracker.removeCards('ab as foo');
+        assert(spy.calledWith('Invalid card: ab'));
+        assert(spy.calledWith('Invalid card: foo'));
+        spy.restore();
+    });
 
-        it('Should warn of zero card count', function() {
-            var spy = sinon.spy(console, 'warn'),
-            cardTracker = new CardTracker(2);
+    it('Should warn of zero card count', function() {
+        var spy = sinon.spy(console, 'warn'),
+        cardTracker = new CardTracker(2);
 
-            cardTracker.removeCards('as as as');
-            assert(spy.calledWith('Warning: Card cound cannot be less than 0'));
-            spy.restore();
-        });
+        cardTracker.removeCards('as as as');
+        assert(spy.calledWith('Warning: Card cound cannot be less than 0'));
+        spy.restore();
     });
 });

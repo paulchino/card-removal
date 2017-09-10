@@ -1,12 +1,9 @@
 
 function CardTracker(decks) {
     this.decks = this.validateConstructor(decks);
-    // number of cards in the deck
-    // count
     this.cardCount = 0;
     this.trueCardCount = 0;
-    this.cardsLeft = this.decks * 52;
-
+    this.numberOfCardsLeft = this.decks * 52;
     this.remainingCards = {
         'as': 0, 'ad': 0, 'ah': 0, 'ac': 0,
         'ks': 0, 'kd': 0, 'kh': 0, 'kc': 0,
@@ -22,19 +19,13 @@ function CardTracker(decks) {
         '3s': 0, '3d': 0, '3h': 0, '3c': 0,
         '2s': 0, '2d': 0, '2h': 0, '2c': 0
     };
-
     this.cardValues = {
         'a': -1, 'k': -1, 'q': -1, 'j': -1, 't': -1,
         '9': 0, '8': 0, '7': 0,
         '6': 1, '5': 1, '4': 1, '3': 1, '2': 1
     };
-
     this.constructDeck(this.decks);
 };
-
-// 2-6 -> +1
-// 7-9 -> 0
-// 10-a -> -1
 
 CardTracker.prototype = {
     constructDeck: function(decks) {
@@ -44,6 +35,7 @@ CardTracker.prototype = {
             this.remainingCards[card] = decks;
         }
     },
+
     removeCards: function(cards) {
         var cardList = this.validateCards(cards);
         self = this;
@@ -51,28 +43,73 @@ CardTracker.prototype = {
         cardList.forEach(function(card) {
             if (self.remainingCards[card] > 0) {
                 self.remainingCards[card]--;
+                self.updateCounts(card);
             } else {
                 self.constructWarnings('zeroCount', null, true);
             }
         });
     },
+
     addCards: function(cards) {
         var cardList = this.validateCards(cards);
         self = this;
 
         cardList.forEach(function(card) {
             self.remainingCards[card]++;
+            self.updateCounts(card, true);
         });
     },
+
+    updateCounts: function(card, add) {
+        var cardRank = card[0],
+        countValue = this.cardValues[cardRank],
+        decksRemaining;
+
+        if (add) {
+            countValue *= -1;
+            this.cardCount++;
+            this.numberOfCardsLeft++;
+        } else {
+            this.cardCount--;
+            this.numberOfCardsLeft--;
+        }
+        this.cardCount += countValue;
+        decksRemaining = this.numberOfCardsLeft / 52;
+        this.trueCardCount = +((this.cardCount / decksRemaining).toFixed(2));
+    },
+
+    updateCardValues: function(valObj) {
+        // check its an iterable object
+        if (this.isObject(valObj)) {
+            for (k in valObj) {
+                if (k in this.cardValues && typeof valObj[k] === 'number') {
+                    this.cardValues[k] = valObj[k];
+                }
+            }
+        } else {
+            this.constructWarnings('updateCardValue', null, true);
+        }
+    },
+
     returnCards: function() {
         return this.remainingCards;
     },
-    // Validation
+
+    /**
+    Validations / Helpers
+    */
     validateConstructor: function(decks) {
         return typeof decks !== 'number' ? this.constructWarnings('intReq') : Math.round(decks);
     },
+
+    /**
+     * Checks list cards and filters only valid ones
+     * @param {string} cards
+     * @return {array} cleanList
+     */
     validateCards: function(cards) {
         var cardList,
+        cleanList = [],
         self = this,
         invalidCards;
 
@@ -84,12 +121,22 @@ CardTracker.prototype = {
             cardList.forEach(function(card) {
                 if (!(card in self.remainingCards)) {
                     self.constructWarnings('invalidCard', card, true);
+                } else {
+                    cleanList.push(card);
                 }
             });
         }
 
-        return cardList;
+        return cleanList;
     },
+
+    /**
+     * Validation warnings for incorrect input.
+     * @param {string} map - mapping for error type
+     * @param {string} card - value of incorrect card
+     * @param {bool} warning - if true, will only return warning
+     * @return {console.warn / SyntaxError}
+     */
     constructWarnings: function(map, card, warning) {
         var msg = this.errMsg[map];
 
@@ -103,11 +150,17 @@ CardTracker.prototype = {
             throw new SyntaxError(msg);
         }
     },
+
+    isObject: function(item) {
+        return (typeof item === "object" && !Array.isArray(item) && item !== null);
+    },
+
     errMsg: {
         'intReq': 'Enter an integer to create tracker',
         'updateDeck': 'Enter cards as a space seperated string',
         'invalidCard': 'Invalid card: ',
-        'zeroCount': 'Warning: Card cound cannot be less than 0'
+        'zeroCount': 'Warning: Card cound cannot be less than 0',
+        'updateCardValue': 'Pass an object'
     }
 }
 
