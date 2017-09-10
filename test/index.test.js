@@ -82,26 +82,18 @@ describe('cardMethods', function() {
         });
     });
 
-    describe('returnCards', function() {
-        var cardTracker = new CardTracker(4),
-        returnedCards = cardTracker.returnCards();
-
-        it('Should return remainingCards', function() {
-            assert.isObject(returnedCards);
-            assert.containsAllKeys(returnedCards, constructDeckArray());
-            expect(cardTracker.remainingCards.as).to.equal(4);
+    describe('updateCardValues', function() {
+        var cardTracker = new CardTracker(2);
+        cardTracker.updateCardValues({
+            'a': 4,
+            't': 3,
+            'q': 'foo'
         });
-    });
 
-    describe('validateCards', function() {
-        it('Should strip out invalid card values', function() {
-            var badStr = 'as foo as qh 2c rc tg',
-            expectedArray = ['as', 'as', 'qh', '2c'],
-            cardTracker = new CardTracker(1),
-            filteredCards = cardTracker.validateCards(badStr);
-
-            expect(filteredCards).to.have.lengthOf(4);
-            expect(filteredCards).to.deep.equal(expectedArray);
+        it('Should update a and t cardValues', function() {
+            expect(cardTracker.cardValues.a).to.equal(4);
+            expect(cardTracker.cardValues.t).to.equal(3);
+            expect(cardTracker.cardValues.q).to.equal(-1);
         });
     });
 });
@@ -134,6 +126,15 @@ describe('validationErrors', function() {
 
         cardTracker.removeCards('as as as');
         assert(spy.calledWith('Warning: Card cound cannot be less than 0'));
+        spy.restore();
+    });
+
+    it('Should warn of invalid argument for updateCardValues', function() {
+        var spy = sinon.spy(console, 'warn'),
+        cardTracker = new CardTracker(2);
+
+        cardTracker.updateCardValues(['as', 1]);
+        assert(spy.calledWith('Warning: Pass an object'));
         spy.restore();
     });
 });
