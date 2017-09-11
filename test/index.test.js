@@ -98,6 +98,76 @@ describe('cardMethods', function() {
     });
 });
 
+describe('cardCounter', function() {
+    it('Should have a count of -5', function() {
+        var cardTracker = new CardTracker(5);
+        cardTracker.removeCards('as ah kd qs tc 9c 8s');
+        expect(cardTracker.cardCount).to.equal(-5);
+    });
+
+    it('Should have correct count after updateCardValues', function() {
+        var cardTracker = new CardTracker(5);
+        cardTracker.removeCards('as qs tc');
+        expect(cardTracker.cardCount).to.equal(-3);
+
+        cardTracker.updateCardValues({'2': -8});
+        // -3 - 16 = -19
+        cardTracker.removeCards('2c 2d');
+        expect(cardTracker.cardCount).to.equal(-19);
+
+        // -19 + 8 + 0
+        cardTracker.addCards('2s 8c')
+        expect(cardTracker.cardCount).to.equal(-11);
+    });
+
+    it('Should properly update numberOfCardsLeft', function() {
+        var cardTracker = new CardTracker(3);
+        expect(cardTracker.numberOfCardsLeft).to.equal(156);
+
+        // 8 cards removed, 4th kd is ignored as there are only three
+        cardTracker.removeCards('as ah kd qs tc 9c 88 kd kd kd');
+        expect(cardTracker.numberOfCardsLeft).to.equal(148);
+
+        // 3 cards added
+        cardTracker.addCards('2d 4t 9d tc')
+        expect(cardTracker.numberOfCardsLeft).to.equal(151);
+    });
+
+    it('Should properly update trueCardCount', function() {
+        var cardTracker = new CardTracker(3);
+
+        cardTracker.removeCards('as ad tc');
+        expect(cardTracker.cardCount).to.equal(-3);
+        expect(cardTracker.numberOfCardsLeft).to.equal(153);
+        // count = -3, numberOfCardsLeft = 153, decksRemaining = 153 / 52 = 2.94
+        // trueCardCount = -3 / 2.94 = 1.02
+        expect(cardTracker.trueCardCount).to.equal(-1.02);
+
+        cardTracker.addCards('8c ad ad foo');
+        expect(cardTracker.cardCount).to.equal(-1);
+        expect(cardTracker.numberOfCardsLeft).to.equal(156);
+        // decksRemaining = 156 / 52 = 3
+        // trueCardCount = -1 / 3 = -0.33
+        expect(cardTracker.trueCardCount).to.equal(-0.33);
+    });
+
+
+    it('Should properly update trueCardCount after updateCardValue', function() {
+        var cardTracker = new CardTracker(3);
+
+        cardTracker.removeCards('as ad tc');
+        // count = -3, numberOfCardsLeft = 153, decksRemaining = 153 / 52 = 2.94
+        // trueCardCount = -3 / 2.94 = 1.02
+        cardTracker.updateCardValues({'8': -100});
+        cardTracker.removeCards('8d');
+        expect(cardTracker.cardCount).to.equal(-103);
+        expect(cardTracker.numberOfCardsLeft).to.equal(152);
+        // decksRemaining = 152 / 52 = 2.9231
+        // trueCardCount = -103 / 2.9231 =
+        expect(cardTracker.trueCardCount).to.equal(-35.24);
+    });
+});
+
 describe('validationErrors', function() {
     it('Will only accept numbers for deck constructor', function() {
         assert.throws(function () { new CardTracker('foo') });

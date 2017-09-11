@@ -22,14 +22,16 @@ function updateCounts(card, add) {
     decksRemaining;
 
     if (add) {
-        countValue *= -1;
-        this.cardCount++;
         this.numberOfCardsLeft++;
+        countValue *= -1;
     } else {
-        this.cardCount--;
         this.numberOfCardsLeft--;
     }
-    this.cardCount += countValue;
+
+    if (countValue !== 0) {
+        this.cardCount += countValue;
+    }
+
     decksRemaining = this.numberOfCardsLeft / 52;
     this.trueCardCount = +((this.cardCount / decksRemaining).toFixed(2));
 };
