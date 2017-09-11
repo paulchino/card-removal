@@ -12,8 +12,7 @@ script:
   - npm run test
   - npm run coverage
 after_success:
-  - if [ "$TRAVIS_BRANCH" != "master" ]; then npm run report-coverage; fi
-  - if [ "$TRAVIS_BRANCH" = "master" ]; then npm run report-coverage; npm run semantic-relase; fi
+  - npm run report-coverage
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/

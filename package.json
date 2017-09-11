@@ -13,8 +13,7 @@
     "build:main": "babel --out-dir dist --ignore *.test.js src",
     "build:umd": "webpack --output-filename index.umd.js",
     "build:umd.min": "webpack --output-filename index.umd.min.js -p",
-    "start-dev": "webpack-dev-server --progress --colors --content-base src/",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "start-dev": "webpack-dev-server --progress --colors --content-base src/"
   },
   "repository": {
     "type": "git",
@@ -47,7 +46,6 @@
     "npm-run-all": "4.0.2",
     "nyc": "11.1.0",
     "rimraf": "2.6.1",
-    "semantic-release": "^7.0.2",
     "sinon": "3.2.1",
     "webpack": "3.5.4",
     "webpack-dev-server": "2.7.1"
