@@ -6,10 +6,15 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 # What it does
-card-tracker is a dependency free library which keeps running track of the remaining cards left in the deck and the current blackjack card count. Cards can either be added or removed to your tracker.
+card-tracker is a dependency free library which keeps running track of the remaining cards left in the deck and the current blackjack card count. Cards can either be added or removed to your tracker. Both common module and umd compatible for the browser.
 
 # Install
+Node:
 `npm install card-tracker`
+
+Browser Script:
+Go to unpkg.com/card-tracker@version/dist where 'version' is latest released version. 
+Insert either the index.umd.js or index.umd.min.js as a script.
 
 # Usage
 Initialize
