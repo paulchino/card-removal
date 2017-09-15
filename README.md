@@ -9,14 +9,13 @@
 card-tracker is a dependency free library which keeps running track of the remaining cards left in the deck and the current blackjack card count. Cards can either be added or removed to your tracker.
 
 # Install
-npm install card-tracker
+`npm install card-tracker`
 
 # Usage
 Initialize
 ```js
 var CardTracker = require(‘card-tracker’);
 var cardTracker = new CardTracker(1); // number of card decks
-
 ```
 Methods:
 * removeCards
@@ -24,16 +23,18 @@ Methods:
 * updateCardValues
 
 ```js
-// removeCards and addCards take a space seperated string of cards represented by two characters, value and suit
-// example ten clubs - tc, ace spades - as
+/* removeCards and addCards take a space seperated string of cards represented by 
+two characters, value and suit
+example ten clubs - tc, ace spades - as
+*/
 cardTracker.removeCards('as td jc');
 ```
-Atributes:
-* decks - Initial number of decks on initialize
-* cardCount - Current card count
+Attributes:
+* decks - Initial number of decks used 
 * numberOfCardsLeft
 * remainingCards
-* trueCardCount
+* cardCount - Current card count
+* trueCardCount - cardCount / number of decks (where number of decks = `numberOfCardsLeft / 52`
 ```js
 cardTracker.decks // 1
 cardTracker.cardCount // -3 as 3 high cards removed
